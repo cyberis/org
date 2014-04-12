@@ -12,3 +12,5 @@
 '.editor':
   'ctrl-enter': 'org:cmd-enter'
   'ctrl-shift-enter': 'org:cmd-shift-enter'
+  'alt-right': 'org:demote-headline'
+  'alt-left': 'org:promote-headline'

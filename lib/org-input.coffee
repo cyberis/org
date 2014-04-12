@@ -9,7 +9,7 @@ class OrgInput
       editorView.command "org:cmd-enter", (e) =>
         @insertEmptyHeading()
       editorView.command "org:cmd-shift-enter", (e) =>
-          @insertTodo()
+        @insertTodo()
 
 
   insertText: (str) =>
@@ -33,8 +33,6 @@ class OrgInput
     @editor.moveCursorToEndOfLine()
     @editor.insertNewline()
     @editor.insertText('* TODO ')
-
-
 
   destroy: =>
     @editor.getBuffer().off "changed", @onChanged
