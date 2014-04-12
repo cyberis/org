@@ -9,3 +9,6 @@
 # https://atom.io/docs/latest/advanced/keymaps
 '.workspace':
   'ctrl-alt-o': 'org:toggle'
+'.editor':
+  'ctrl-enter': 'org:cmd-enter'
+  'ctrl-shift-enter': 'org:cmd-shift-enter'
