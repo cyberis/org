@@ -11,16 +11,13 @@ class OrgInput
     @possibleTodo = ''
     atom.workspaceView.eachEditorView (editorView) =>
       editorView.command "org:cmd-enter", (e) =>
-        @insertEmptyHeading()
+        @insertHeadlineBelow()
       editorView.command "org:cmd-shift-enter", (e) =>
         @insertTodo()
       editorView.command "org:demote-headline", (e) =>
         @demoteHeadline()
       editorView.command "org:promote-headline", (e) =>
         @promoteHeadline()
-      editorView.command "org:alt-enter", (e) =>
-        @insertHeadlineBelow()
-
 
   insertText: (str) =>
     process.nextTick =>
