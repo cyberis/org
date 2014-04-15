@@ -18,6 +18,8 @@ class OrgInput
         @demoteHeadline()
       editorView.command "org:promote-headline", (e) =>
         @promoteHeadline()
+      editorView.command "org:alt-enter", (e) =>
+        @insertHeadlineBelow()
 
 
   insertText: (str) =>
@@ -48,10 +50,21 @@ class OrgInput
     @moveIndentationOfCurrentLineBy 1
 
   moveIndentationOfCurrentLineBy: (value) =>
-    row = @editor.getCursors()[0].getBufferRow()
+    row = @getCurrentRow()
     newIndent = @editor.indentationForBufferRow(row) + value
     if newIndent>=0
       @editor.setIndentationForBufferRow row, newIndent
+
+  insertHeadlineBelow: =>
+    row = @getCurrentRow()
+    indent = @editor.indentationForBufferRow(row)
+    @editor.insertNewline()
+    @editor.insertText('* ')
+    @editor.setIndentationForBufferRow(row+1, indent)
+
+
+  getCurrentRow: =>
+    return @editor.getCursors()[0].getBufferRow()
 
 
   destroy: =>

@@ -14,3 +14,4 @@
   'ctrl-shift-enter': 'org:cmd-shift-enter'
   'alt-right': 'org:demote-headline'
   'alt-left': 'org:promote-headline'
+  'alt-enter': 'org:alt-enter'
