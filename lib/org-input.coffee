@@ -3,65 +3,68 @@
 module.exports =
 class OrgInput
   constructor: ->
-    @editor = atom.workspace.getActiveEditor()
-    @editor.setSoftTabs true
-    @editor.setTabLength 2
-    @insertText('Org mode on\n')
-    @editor.getBuffer().on "changed", @onBufferChanged
     @possibleTodo = ''
     atom.workspaceView.eachEditorView (editorView) =>
+      ed = editorView.getEditor()
+
+      ed.setSoftTabs true
+      ed.setTabLength 2
+
+      ed.getBuffer().on "changed", (event) =>
+        @onBufferChanged(ed, event)
+
       editorView.command "org:cmd-enter", (e) =>
-        @insertHeadlineBelow()
+        @insertHeadlineBelow(ed)
       editorView.command "org:cmd-shift-enter", (e) =>
-        @insertTodo()
+        @insertTodo(ed)
       editorView.command "org:demote-headline", (e) =>
-        @demoteHeadline()
+        @demoteHeadline(ed)
       editorView.command "org:promote-headline", (e) =>
-        @promoteHeadline()
+        @promoteHeadline(ed)
 
-  insertText: (str) =>
+  insertTextNextTick: (str, editor) =>
     process.nextTick =>
-      @editor.insertText(str)
+      editor.insertText(str)
 
-  onBufferChanged: (e) =>
-    if (e.newText!=' ')
-      @possibleTodo = @possibleTodo + e.newText
-    isNewLineWithStar = e.oldRange.start.column==0 and e.newText=='*'
+  onBufferChanged: (editor, event) =>
+    if (event.newText!=' ')
+      @possibleTodo = @possibleTodo + editor.newText
+    isNewLineWithStar = event.oldRange.start.column==0 and event.newText=='*'
     hasTypedTodoKeyword = @possibleTodo=="TODO" or @possibleTodo=="NEXT"
     if isNewLineWithStar or hasTypedTodoKeyword
       @possibleTodo = ''
-      @insertText ' '
+      @insertTextNextTick ' ', editor
 
-  insertEmptyHeading: =>
-    @editor.insertNewline()
-    @editor.insertText('*')
+  insertEmptyHeading: (ed) =>
+    ed.insertNewline()
+    ed.insertText('*')
 
-  insertTodo: =>
-    @editor.moveCursorToEndOfLine()
-    @editor.insertNewline()
-    @editor.insertText('* TODO ')
+  insertTodo: (ed) =>
+    ed.moveCursorToEndOfLine()
+    ed.insertNewline()
+    ed.insertText('* TODO ')
 
-  promoteHeadline: =>
-    @moveIndentationOfCurrentLineBy -1
-  demoteHeadline: =>
-    @moveIndentationOfCurrentLineBy 1
+  promoteHeadline: (ed) =>
+    @moveIndentationOfCurrentLineBy -1, ed
+  demoteHeadline: (ed) =>
+    @moveIndentationOfCurrentLineBy 1, ed
 
-  moveIndentationOfCurrentLineBy: (value) =>
-    row = @getCurrentRow()
-    newIndent = @editor.indentationForBufferRow(row) + value
+  moveIndentationOfCurrentLineBy: (value, ed) =>
+    row = @getCurrentRow(ed)
+    newIndent = ed.indentationForBufferRow(row) + value
     if newIndent>=0
-      @editor.setIndentationForBufferRow row, newIndent
+      ed.setIndentationForBufferRow row, newIndent
 
-  insertHeadlineBelow: =>
-    row = @getCurrentRow()
-    indent = @editor.indentationForBufferRow(row)
-    @editor.insertNewline()
-    @editor.insertText('* ')
-    @editor.setIndentationForBufferRow(row+1, indent)
+  insertHeadlineBelow: (ed) ->
+    row = @getCurrentRow(ed)
+    indent = ed.indentationForBufferRow(row)
+    ed.insertNewline()
+    ed.insertText('* ')
+    ed.setIndentationForBufferRow(row+1, indent)
 
 
-  getCurrentRow: =>
-    return @editor.getCursors()[0].getBufferRow()
+  getCurrentRow: (ed) =>
+    return ed.getCursors()[0].getBufferRow()
 
 
   destroy: =>

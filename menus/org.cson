@@ -7,10 +7,10 @@
   {
     'label': 'Packages'
     'submenu': [
-      'label': 'org'
-      'submenu': [
-        { 'label': 'Toggle', 'command': 'org:toggle' }
-      ]
-    ]
-  }
-]
+       'label': 'org'
+       'submenu': [
+         { 'label': 'Toggle', 'command': 'org:toggle' }
+       ]
+     ]
+   }
+ ]
