@@ -1,12 +1,12 @@
 {
   "name": "org",
   "main": "./lib/org",
-  "version": "0.5.0",
+  "version": "0.2.0",
   "description": "Very early stage of Org-Mode for atom.io",
   "activationEvents": [
     "org:toggle"
   ],
-  "repository": "https://github.com/wolfgang/org",
+  "repository": "https://github.com/wolfgang/org-atom",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
