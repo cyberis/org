@@ -7,7 +7,7 @@ class OrgInput
     atom.workspaceView.eachEditorView (editorView) =>
       ed = editorView.getEditor()
       uri = ed.getBuffer().getUri()
-      if (uri.endsWith('.org'))
+      if (uri and uri.endsWith('.org'))
         ed.setSoftTabs true
         ed.setTabLength 2
 

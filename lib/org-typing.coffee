@@ -9,7 +9,7 @@ class OrgTyping
 
   onBufferChanged: (editor, event) =>
     if (event.newText!=' ')
-      @possibleTodo = @possibleTodo + editor.newText
+      @possibleTodo = @possibleTodo + event.newText
     isNewLineWithStar = event.oldRange.start.column==0 and event.newText=='*'
     hasTypedTodoKeyword = @possibleTodo=="TODO" or @possibleTodo=="NEXT"
     if isNewLineWithStar or hasTypedTodoKeyword
