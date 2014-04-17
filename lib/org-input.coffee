@@ -5,22 +5,30 @@ module.exports =
 class OrgInput
   constructor: ->
     atom.workspaceView.eachEditorView (editorView) =>
-      ed = editorView.getEditor()
-      uri = ed.getBuffer().getUri()
-      if (uri and uri.endsWith('.org'))
-        ed.setSoftTabs true
-        ed.setTabLength 2
+      @setupOrgMode editorView
+      #editorView.getEditor().on "path-changed", (event) =>
+      #  console.log event
+        #@setupOrgMode editorView
 
-        @typing = new OrgTyping(ed)
+  setupOrgMode: (editorView) =>
+    ed = editorView.getEditor()
+    uri = ed.getBuffer().getUri()
+    if (uri and uri.endsWith('.org'))
+      console.log "setting up org-mode for " + uri
+      ed.setSoftTabs true
+      ed.setTabLength 2
 
-        editorView.command "org:cmd-enter", (e) =>
-          @insertHeadlineBelow(ed)
-        editorView.command "org:cmd-shift-enter", (e) =>
-          @insertTodo(ed)
-        editorView.command "org:demote-headline", (e) =>
-          @demoteHeadline(ed)
-        editorView.command "org:promote-headline", (e) =>
-          @promoteHeadline(ed)
+      @typing = new OrgTyping(ed)
+
+      editorView.command "org:cmd-enter", (e) =>
+        @insertHeadlineBelow(ed)
+      editorView.command "org:cmd-shift-enter", (e) =>
+        @insertTodo(ed)
+      editorView.command "org:demote-headline", (e) =>
+        @demoteHeadline(ed)
+      editorView.command "org:promote-headline", (e) =>
+        @promoteHeadline(ed)
+
 
   insertEmptyHeading: (ed) =>
     ed.insertNewline()
