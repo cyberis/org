@@ -21,7 +21,7 @@ class OrgInput
       @typing = new OrgTyping(ed)
 
       editorView.command "org:cmd-enter", (e) =>
-        @insertHeadlineBelow(ed)
+        @insertEmptyHeadline(ed)
       editorView.command "org:cmd-shift-enter", (e) =>
         @insertTodo(ed)
       editorView.command "org:demote-headline", (e) =>
@@ -30,32 +30,30 @@ class OrgInput
         @promoteHeadline(ed)
 
 
-  insertEmptyHeading: (ed) =>
-    ed.insertNewline()
-    ed.insertText('*')
+  insertEmptyHeadline: (ed) =>
+    @insertHeadlineWith '* ', ed
 
   insertTodo: (ed) =>
-    ed.moveCursorToEndOfLine()
-    ed.insertNewline()
-    ed.insertText('* TODO ')
+    @insertHeadlineWith '* TODO ', ed
 
   promoteHeadline: (ed) =>
     @moveIndentationOfCurrentLineBy -1, ed
+
   demoteHeadline: (ed) =>
     @moveIndentationOfCurrentLineBy 1, ed
+
+  insertHeadlineWith: (prefix, ed) =>
+    row = @getCurrentRow(ed)
+    indent = ed.indentationForBufferRow(row)
+    ed.insertNewline()
+    ed.insertText(prefix)
+    ed.setIndentationForBufferRow(row+1, indent)
 
   moveIndentationOfCurrentLineBy: (value, ed) =>
     row = @getCurrentRow(ed)
     newIndent = ed.indentationForBufferRow(row) + value
     if newIndent>=0
       ed.setIndentationForBufferRow row, newIndent
-
-  insertHeadlineBelow: (ed) =>
-    row = @getCurrentRow(ed)
-    indent = ed.indentationForBufferRow(row)
-    ed.insertNewline()
-    ed.insertText('* ')
-    ed.setIndentationForBufferRow(row+1, indent)
 
 
   getCurrentRow: (ed) =>
