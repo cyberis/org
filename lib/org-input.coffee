@@ -4,17 +4,17 @@ OrgTyping = require './org-typing'
 module.exports =
 class OrgInput
   constructor: ->
+    @editorViewsWithOrg = []
     atom.workspaceView.eachEditorView (editorView) =>
       @setupOrgMode editorView
-      #editorView.getEditor().on "path-changed", (event) =>
-      #  console.log event
-        #@setupOrgMode editorView
+      editorView.getEditor().getBuffer().on "saved", (event) =>
+        @setupOrgMode editorView
 
   setupOrgMode: (editorView) =>
     ed = editorView.getEditor()
     uri = ed.getBuffer().getUri()
-    if (uri and uri.endsWith('.org'))
-      console.log "setting up org-mode for " + uri
+    if (@editorViewsWithOrg[editorView.id]!=1 and uri and uri.endsWith('.org'))
+      @editorViewsWithOrg[editorView.id] = 1
       ed.setSoftTabs true
       ed.setTabLength 2
 
