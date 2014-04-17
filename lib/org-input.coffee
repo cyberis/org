@@ -1,9 +1,9 @@
 {Point} = require 'atom'
+OrgTyping = require './org-typing'
 
 module.exports =
 class OrgInput
   constructor: ->
-    @possibleTodo = ''
     atom.workspaceView.eachEditorView (editorView) =>
       ed = editorView.getEditor()
       uri = ed.getBuffer().getUri()
@@ -11,8 +11,8 @@ class OrgInput
         ed.setSoftTabs true
         ed.setTabLength 2
 
-        ed.getBuffer().on "changed", (event) =>
-          @onBufferChanged(ed, event)
+        @typing = new OrgTyping(ed)
+
         editorView.command "org:cmd-enter", (e) =>
           @insertHeadlineBelow(ed)
         editorView.command "org:cmd-shift-enter", (e) =>
@@ -21,26 +21,6 @@ class OrgInput
           @demoteHeadline(ed)
         editorView.command "org:promote-headline", (e) =>
           @promoteHeadline(ed)
-
-  inOrgFile: (ed, fn) =>
-    uri = ed.getBuffer().getUri()
-    if (uri.endsWith('.org'))
-      fn(ed)
-    else
-      e.abortKeyBinding()
-
-  insertTextNextTick: (str, editor) =>
-    process.nextTick =>
-      editor.insertText(str)
-
-  onBufferChanged: (editor, event) =>
-    if (event.newText!=' ')
-      @possibleTodo = @possibleTodo + editor.newText
-    isNewLineWithStar = event.oldRange.start.column==0 and event.newText=='*'
-    hasTypedTodoKeyword = @possibleTodo=="TODO" or @possibleTodo=="NEXT"
-    if isNewLineWithStar or hasTypedTodoKeyword
-      @possibleTodo = ''
-      @insertTextNextTick ' ', editor
 
   insertEmptyHeading: (ed) =>
     ed.insertNewline()
@@ -75,6 +55,5 @@ class OrgInput
 
 
   destroy: =>
-    @editor.getBuffer().off "changed", @onChanged
 
   serialize: ->
