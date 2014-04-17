@@ -20,9 +20,9 @@ class OrgInput
 
       @typing = new OrgTyping(ed)
 
-      editorView.command "org:cmd-enter", (e) =>
+      editorView.command "org:insert-headline-empty-respect-content", (e) =>
         @insertEmptyHeadline(ed)
-      editorView.command "org:cmd-shift-enter", (e) =>
+      editorView.command "org:insert-headline-todo-respect-content", (e) =>
         @insertTodo(ed)
       editorView.command "org:demote-headline", (e) =>
         @demoteHeadline(ed)
@@ -31,10 +31,10 @@ class OrgInput
 
 
   insertEmptyHeadline: (ed) =>
-    @insertHeadlineWith '* ', ed
+    @insertHeadlineWith '* ', ed, true
 
   insertTodo: (ed) =>
-    @insertHeadlineWith '* TODO ', ed
+    @insertHeadlineWith '* TODO ', ed, true
 
   promoteHeadline: (ed) =>
     @moveIndentationOfCurrentLineBy -1, ed
@@ -42,7 +42,9 @@ class OrgInput
   demoteHeadline: (ed) =>
     @moveIndentationOfCurrentLineBy 1, ed
 
-  insertHeadlineWith: (prefix, ed) =>
+  insertHeadlineWith: (prefix, ed, respectContent) =>
+    if (respectContent==true)
+      ed.moveCursorToEndOfLine()
     row = @getCurrentRow(ed)
     indent = ed.indentationForBufferRow(row)
     ed.insertNewline()

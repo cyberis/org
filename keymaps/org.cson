@@ -9,9 +9,8 @@
 # https://atom.io/docs/latest/advanced/keymaps
 '.workspace':
   'ctrl-alt-o': 'org:toggle'
-'.editor':
-  'ctrl-enter': 'org:cmd-enter'
-  'ctrl-shift-enter': 'org:cmd-shift-enter'
+'.workspace .editor:not(.mini)':
+  'cmd-enter': 'org:insert-headline-empty-respect-content'
+  'cmd-shift-enter': 'org:insert-headline-todo-respect-content'
   'alt-right': 'org:demote-headline'
   'alt-left': 'org:promote-headline'
-  'alt-enter': 'org:alt-enter'
