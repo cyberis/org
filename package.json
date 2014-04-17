@@ -6,7 +6,7 @@
   "activationEvents": [
     "org:toggle"
   ],
-  "repository": "https://github.com/wolfgang/org-atom",
+  "repository": "https://github.com/wolfgang/org",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
