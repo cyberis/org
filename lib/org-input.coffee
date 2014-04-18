@@ -5,30 +5,39 @@ module.exports =
 class OrgInput
   constructor: ->
     @editorViewsWithOrg = []
-    atom.workspaceView.eachEditorView (editorView) =>
-      @setupOrgMode editorView
-      editorView.getEditor().getBuffer().on "saved", (event) =>
-        @setupOrgMode editorView
 
-  setupOrgMode: (editorView) =>
+    atom.workspaceView.eachEditorView (editorView) =>
+      @setupCommands editorView
+      @setupEditor editorView
+      editorView.getEditor().getBuffer().on "saved", (event) =>
+        @setupEditor editorView
+
+  setupCommands: (editorView) =>
+    ed = editorView.getEditor()
+    editorView.command "org:insert-headline-empty-respect-content", (e) =>
+      @inOrgFile ed, e, @insertEmptyHeadline
+    editorView.command "org:insert-headline-todo-respect-content", (e) =>
+      @inOrgFile ed, e, @insertTodo
+    editorView.command "org:demote-headline", (e) =>
+      @inOrgFile ed, e, @demoteHeadline
+    editorView.command "org:promote-headline", (e) =>
+      @inOrgFile ed, e, @promoteHeadline
+
+  setupEditor: (editorView) =>
     ed = editorView.getEditor()
     uri = ed.getBuffer().getUri()
     if (@editorViewsWithOrg[editorView.id]!=1 and uri and uri.endsWith('.org'))
       @editorViewsWithOrg[editorView.id] = 1
       ed.setSoftTabs true
       ed.setTabLength 2
-
       @typing = new OrgTyping(ed)
 
-      editorView.command "org:insert-headline-empty-respect-content", (e) =>
-        @insertEmptyHeadline(ed)
-      editorView.command "org:insert-headline-todo-respect-content", (e) =>
-        @insertTodo(ed)
-      editorView.command "org:demote-headline", (e) =>
-        @demoteHeadline(ed)
-      editorView.command "org:promote-headline", (e) =>
-        @promoteHeadline(ed)
-
+  inOrgFile: (ed, e, fn) =>
+    uri = ed.getBuffer().getUri()
+    if (uri.endsWith('.org'))
+      fn(ed)
+    else
+      e.abortKeyBinding()
 
   insertEmptyHeadline: (ed) =>
     @insertHeadlineWith '* ', ed, true
