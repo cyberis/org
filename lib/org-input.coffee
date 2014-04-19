@@ -56,12 +56,10 @@ class OrgInput
     @moveIndentationOfCurrentLineBy 1, ed
 
   cycleTodoForward: (ed) =>
-    line = @getCurrentLine ed
-    @replaceCurrentLine ed, line.replace /TODO/, "DONE"
+    @cycleTodo ed, 1
 
   cycleTodoBackward: (ed) =>
-    line = @getCurrentLine ed
-    @replaceCurrentLine ed, line.replace /DONE/, "TODO"
+    @cycleTodo ed, -1
 
   insertHeadlineWith: (prefix, ed, respectContent) =>
     if (respectContent==true)
@@ -78,6 +76,18 @@ class OrgInput
     if newIndent>=0
       ed.setIndentationForBufferRow row, newIndent
 
+  cycleTodo: (ed, direction) =>
+    keywords = ['TODO', 'NEXT', 'DONE']
+    line = @getCurrentLine ed
+    for i in [0..keywords.length] by 1
+      kw = keywords[i]
+      if (line.indexOf(kw) != -1)
+        nextIndex = (i+direction)%keywords.length
+        if (nextIndex<0)
+          nextIndex = keywords.length-1
+        nextKW = keywords[nextIndex]
+        @replaceCurrentLine ed, line.replace "* " + kw, '* ' + nextKW
+
   getCurrentLine: (ed) =>
     row = @getCurrentRow ed
     return ed.getBuffer().getLines()[row]
@@ -85,10 +95,11 @@ class OrgInput
   getCurrentRow: (ed) =>
     return ed.getCursor().getBufferRow()
 
+
   replaceCurrentLine: (ed, line) =>
     pos = ed.getCursor().getBufferPosition()
     ed.selectLine()
-    ed.insertText line
+    ed.insertText line + '\n'
     ed.getCursor().setBufferPosition(pos)
 
   destroy: =>
