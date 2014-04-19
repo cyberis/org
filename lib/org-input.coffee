@@ -83,11 +83,13 @@ class OrgInput
     return ed.getBuffer().getLines()[row]
 
   getCurrentRow: (ed) =>
-    return ed.getCursors()[0].getBufferRow()
+    return ed.getCursor().getBufferRow()
 
   replaceCurrentLine: (ed, line) =>
+    pos = ed.getCursor().getBufferPosition()
     ed.selectLine()
     ed.insertText line
+    ed.getCursor().setBufferPosition(pos)
 
   destroy: =>
 
