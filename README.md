@@ -18,8 +18,8 @@ Files with .org extension are in "org-mode", providing the following:
 * Demote (shift right) headline with Alt-Right
 * Promote (shit left) headline with Alt-Left
 * Insert break on the fly when typing a '*'
-* TODO keyword is colord in red
-
+* TODO keyword is colored in red
+* Rudimentary state cycling TODO -> NEXT -> DONE with Shift-Right/Shift-Left 
 ## Roadmap
 
 * Structure editing
