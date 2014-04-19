@@ -14,3 +14,5 @@
   'cmd-shift-enter': 'org:insert-headline-todo-respect-content'
   'alt-right': 'org:demote-headline'
   'alt-left': 'org:promote-headline'
+  'shift-right': 'org:cycle-todo-forward'
+  'shift-left': 'org:cycle-todo-backward'

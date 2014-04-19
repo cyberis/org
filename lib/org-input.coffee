@@ -22,6 +22,10 @@ class OrgInput
       @inOrgFile ed, e, @demoteHeadline
     editorView.command "org:promote-headline", (e) =>
       @inOrgFile ed, e, @promoteHeadline
+    editorView.command "org:cycle-todo-forward", (e) =>
+      @inOrgFile ed, e, @cycleTodoForward
+    editorView.command "org:cycle-todo-backward", (e) =>
+      @inOrgFile ed, e, @cycleTodoBackward
 
   setupEditor: (editorView) =>
     ed = editorView.getEditor()
@@ -51,6 +55,14 @@ class OrgInput
   demoteHeadline: (ed) =>
     @moveIndentationOfCurrentLineBy 1, ed
 
+  cycleTodoForward: (ed) =>
+    line = @getCurrentLine ed
+    @replaceCurrentLine ed, line.replace /TODO/, "DONE"
+
+  cycleTodoBackward: (ed) =>
+    line = @getCurrentLine ed
+    @replaceCurrentLine ed, line.replace /DONE/, "TODO"
+
   insertHeadlineWith: (prefix, ed, respectContent) =>
     if (respectContent==true)
       ed.moveCursorToEndOfLine()
@@ -66,10 +78,16 @@ class OrgInput
     if newIndent>=0
       ed.setIndentationForBufferRow row, newIndent
 
+  getCurrentLine: (ed) =>
+    row = @getCurrentRow ed
+    return ed.getBuffer().getLines()[row]
 
   getCurrentRow: (ed) =>
     return ed.getCursors()[0].getBufferRow()
 
+  replaceCurrentLine: (ed, line) =>
+    ed.selectLine()
+    ed.insertText line
 
   destroy: =>
 

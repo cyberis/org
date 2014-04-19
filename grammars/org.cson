@@ -12,4 +12,9 @@
   'name': 'org-next'
 }
 
+{
+  'match': '(?<!\\w)@?DONE\\b'
+  'name': 'org-done'
+}
+
 ]
