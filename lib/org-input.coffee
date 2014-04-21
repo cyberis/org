@@ -1,7 +1,7 @@
-{Point} = require 'atom'
+OrgEditorHelpers = require './org-editor-helpers'
 
 module.exports =
-class OrgInput
+class OrgInput extends OrgEditorHelpers
   constructor: ->
     atom.workspaceView.eachEditorView (editorView) =>
       @setupCommands editorView
@@ -20,13 +20,6 @@ class OrgInput
       @inOrgFile ed, e, @cycleTodoForward
     editorView.command "org:cycle-todo-backward", (e) =>
       @inOrgFile ed, e, @cycleTodoBackward
-
-  inOrgFile: (ed, e, fn) =>
-    uri = ed.getBuffer().getUri()
-    if (uri.endsWith('.org'))
-      fn(ed)
-    else
-      e.abortKeyBinding()
 
   insertEmptyHeadline: (ed) =>
     @insertHeadlineWith '* ', ed, true
@@ -72,19 +65,6 @@ class OrgInput
           nextIndex = keywords.length-1
         nextKW = keywords[nextIndex]
         @replaceCurrentLine ed, line.replace "* " + kw, '* ' + nextKW
-
-  getCurrentLine: (ed) =>
-    row = @getCurrentRow ed
-    return ed.getBuffer().getLines()[row]
-
-  getCurrentRow: (ed) =>
-    return ed.getCursor().getBufferRow()
-
-  replaceCurrentLine: (ed, line) =>
-    pos = ed.getCursor().getBufferPosition()
-    ed.selectLine()
-    ed.insertText line + '\n'
-    ed.getCursor().setBufferPosition(pos)
 
   destroy: =>
 
