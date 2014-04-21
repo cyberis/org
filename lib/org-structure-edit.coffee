@@ -1,7 +1,7 @@
 OrgEditorHelpers = require './org-editor-helpers'
 
 module.exports =
-class OrgInput extends OrgEditorHelpers
+class OrgStructureEdit extends OrgEditorHelpers
   constructor: ->
     atom.workspaceView.eachEditorView (editorView) =>
       @setupCommands editorView

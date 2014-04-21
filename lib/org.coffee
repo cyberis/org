@@ -1,11 +1,11 @@
 OrgEditor = require './org-editor'
-OrgInput = require './org-input'
+OrgStructureEdit = require './org-structure-edit'
 
 module.exports =
   activate: (state) ->
     console.log "org-mode activate"
     @orgEditor = new OrgEditor
-    @orgInput = new OrgInput
+    @orgStructureEdit = new OrgStructureEdit
   deactivate: ->
     console.log "org-mode deactivate"
     @orgInput.destroy()
