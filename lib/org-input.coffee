@@ -1,16 +1,10 @@
 {Point} = require 'atom'
-OrgTyping = require './org-typing'
 
 module.exports =
 class OrgInput
   constructor: ->
-    @editorViewsWithOrg = []
-
     atom.workspaceView.eachEditorView (editorView) =>
       @setupCommands editorView
-      @setupEditor editorView
-      editorView.getEditor().getBuffer().on "saved", (event) =>
-        @setupEditor editorView
 
   setupCommands: (editorView) =>
     ed = editorView.getEditor()
@@ -26,15 +20,6 @@ class OrgInput
       @inOrgFile ed, e, @cycleTodoForward
     editorView.command "org:cycle-todo-backward", (e) =>
       @inOrgFile ed, e, @cycleTodoBackward
-
-  setupEditor: (editorView) =>
-    ed = editorView.getEditor()
-    uri = ed.getBuffer().getUri()
-    if (@editorViewsWithOrg[editorView.id]!=1 and uri and uri.endsWith('.org'))
-      @editorViewsWithOrg[editorView.id] = 1
-      ed.setSoftTabs true
-      ed.setTabLength 2
-      @typing = new OrgTyping(ed)
 
   inOrgFile: (ed, e, fn) =>
     uri = ed.getBuffer().getUri()
@@ -94,7 +79,6 @@ class OrgInput
 
   getCurrentRow: (ed) =>
     return ed.getCursor().getBufferRow()
-
 
   replaceCurrentLine: (ed, line) =>
     pos = ed.getCursor().getBufferPosition()

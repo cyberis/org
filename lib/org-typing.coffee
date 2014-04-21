@@ -6,7 +6,6 @@ class OrgTyping
     editor.getBuffer().on "changed", (event) =>
       @onBufferChanged(editor, event)
 
-
   onBufferChanged: (editor, event) =>
     if (event.newText!=' ')
       @possibleTodo = @possibleTodo + event.newText
