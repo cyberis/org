@@ -17,10 +17,10 @@ class OrgEditorHelpers
     return ed.getCursor().getBufferRow()
 
   replaceCurrentLine: (ed, line) =>
-    pos = @getCursorPosition()
+    pos = @getCursorPosition ed
     ed.selectLine()
     ed.insertText line + '\n'
-    @setCursorPosition pos.row, pos.column
+    @setCursorPosition ed, pos.row, pos.column
 
   moveCursorUp: (ed) =>
     row = @getCurrentRow ed
