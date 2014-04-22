@@ -8,7 +8,7 @@ The package is activated by pressing ctrl-alt o. After that, every file with an 
 
 You probably don't want to use this yet, but you are very welcome to contribute.
 
-My first goal is implement [structure editing](http://orgmode.org/manual/Structure-editing.html).
+The first goal is to implement [structure editing](http://orgmode.org/manual/Structure-editing.html).
 
 ## Functionality so far
 
@@ -20,6 +20,7 @@ Files with .org extension are in "org-mode", providing the following:
 * Insert break on the fly when typing a '*'
 * TODO keyword is colored in red
 * Rudimentary state cycling TODO -> NEXT -> DONE with Shift-Right/Shift-Left 
+
 ## Roadmap
 
 * Structure editing
