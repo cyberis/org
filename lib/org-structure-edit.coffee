@@ -1,3 +1,5 @@
+{Point} = require 'atom'
+
 OrgEditorHelpers = require './org-editor-helpers'
 
 module.exports =
@@ -20,11 +22,15 @@ class OrgStructureEdit extends OrgEditorHelpers
       @inOrgFile ed, e, @cycleTodoForward
     editorView.command "org:cycle-todo-backward", (e) =>
       @inOrgFile ed, e, @cycleTodoBackward
-
     editorView.command "org:demote-tree", (e) =>
       @inOrgFile ed, e, @demoteTree
     editorView.command "org:promote-tree", (e) =>
       @inOrgFile ed, e, @promoteTree
+
+    editorView.command "org:move-tree-up", (e) =>
+      @inOrgFile ed, e, @moveTreeUp
+    editorView.command "org:move-tree-down", (e) =>
+      @inOrgFile ed, e, @moveTreeDown
 
   insertEmptyHeadline: (ed) =>
     @insertHeadlineWith '* ', ed, true
@@ -50,6 +56,21 @@ class OrgStructureEdit extends OrgEditorHelpers
   promoteTree: (ed) =>
     @indentCurrentTree ed, -1
 
+  moveTreeDown: (ed) =>
+    pos = @getCursorPosition ed
+    row = pos.row
+    buffer = ed.getBuffer()
+    currentLine = buffer.lineForRow(row)
+    nextLine = buffer.lineForRow(row+1)
+    ed.selectLine()
+    ed.insertText(nextLine + '\n')
+    ed.selectLine()
+    ed.insertText(currentLine + '\n')
+    @setCursorPosition(ed, row + 1, pos.column)
+
+  moveTreeUp: (ed) =>
+    console.log "moveTreeDown"
+
   insertHeadlineWith: (prefix, ed, respectContent) =>
     if (respectContent==true)
       ed.moveCursorToEndOfLine()
@@ -64,7 +85,7 @@ class OrgStructureEdit extends OrgEditorHelpers
     @indentLine ed, row, value
 
   indentCurrentTree: (ed, value) =>
-    row = @getCurrentRow(ed)
+    row = @getCurrentRow
     buffer = ed.getBuffer()
     indent = ed.indentationForBufferRow(row)
     for i in [row+1 .. buffer.getLastRow()] by 1

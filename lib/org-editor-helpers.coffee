@@ -1,3 +1,4 @@
+{Point} = require 'atom'
 
 module.exports =
 class OrgEditorHelpers
@@ -16,10 +17,28 @@ class OrgEditorHelpers
     return ed.getCursor().getBufferRow()
 
   replaceCurrentLine: (ed, line) =>
-    pos = ed.getCursor().getBufferPosition()
+    pos = @getCursorPosition()
     ed.selectLine()
     ed.insertText line + '\n'
-    ed.getCursor().setBufferPosition(pos)
+    @setCursorPosition pos.row, pos.column
+
+  moveCursorUp: (ed) =>
+    row = @getCurrentRow ed
+    setCurrentRow(ed, row - 1)
+
+  moveCursorDown: (ed) =>
+    row = @getCurrentRow ed
+    setCurrentRow(ed, row + 1)
+
+  setCurrentRow: (ed, row) =>
+    pos = @getCursorPosition ed
+    @setCursorPosition ed, row, pos.column
+
+  setCursorPosition: (ed, row, column) =>
+    ed.getCursor().setBufferPosition(new Point(row, column))
+
+  getCursorPosition: (ed) =>
+    return ed.getCursor().getBufferPosition()
 
   destroy: =>
 
