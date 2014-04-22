@@ -69,7 +69,19 @@ class OrgStructureEdit extends OrgEditorHelpers
     @setCursorPosition(ed, row + 1, pos.column)
 
   moveTreeUp: (ed) =>
-    console.log "moveTreeDown"
+    pos = @getCursorPosition ed
+    row = pos.row
+    buffer = ed.getBuffer()
+    currentLine = buffer.lineForRow(row)
+    prevLine = buffer.lineForRow(row-1)
+    ed.selectLine()
+    ed.insertText(prevLine + '\n')
+    @moveCursorUp ed
+    @moveCursorUp ed
+    ed.selectLine()
+    ed.insertText(currentLine + '\n')
+    @setCursorPosition(ed, row - 1, pos.column)
+
 
   insertHeadlineWith: (prefix, ed, respectContent) =>
     if (respectContent==true)

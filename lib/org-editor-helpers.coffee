@@ -24,11 +24,11 @@ class OrgEditorHelpers
 
   moveCursorUp: (ed) =>
     row = @getCurrentRow ed
-    setCurrentRow(ed, row - 1)
+    @setCurrentRow(ed, row - 1)
 
   moveCursorDown: (ed) =>
     row = @getCurrentRow ed
-    setCurrentRow(ed, row + 1)
+    @setCurrentRow(ed, row + 1)
 
   setCurrentRow: (ed, row) =>
     pos = @getCursorPosition ed
