@@ -28,10 +28,10 @@ class OrgStructureEdit extends OrgEditorHelpers
     @insertHeadlineWith '* TODO ', ed, true
 
   promoteHeadline: (ed) =>
-    @moveIndentationOfCurrentLineBy -1, ed
+    @indentCurrentLine ed, -1
 
   demoteHeadline: (ed) =>
-    @moveIndentationOfCurrentLineBy 1, ed
+    @indentCurrentLine ed, 1
 
   cycleTodoForward: (ed) =>
     @cycleTodo ed, 1
@@ -48,8 +48,11 @@ class OrgStructureEdit extends OrgEditorHelpers
     ed.insertText(prefix)
     ed.setIndentationForBufferRow(row+1, indent)
 
-  moveIndentationOfCurrentLineBy: (value, ed) =>
+  indentCurrentLine: (ed, value) =>
     row = @getCurrentRow(ed)
+    @indentLine ed, row, value
+
+  indentLine: (ed, row, value) =>
     newIndent = ed.indentationForBufferRow(row) + value
     if newIndent>=0
       ed.setIndentationForBufferRow row, newIndent
