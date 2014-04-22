@@ -21,6 +21,11 @@ class OrgStructureEdit extends OrgEditorHelpers
     editorView.command "org:cycle-todo-backward", (e) =>
       @inOrgFile ed, e, @cycleTodoBackward
 
+    editorView.command "org:demote-tree", (e) =>
+      @inOrgFile ed, e, @demoteTree
+    editorView.command "org:promote-tree", (e) =>
+      @inOrgFile ed, e, @promoteTree
+
   insertEmptyHeadline: (ed) =>
     @insertHeadlineWith '* ', ed, true
 
@@ -39,6 +44,12 @@ class OrgStructureEdit extends OrgEditorHelpers
   cycleTodoBackward: (ed) =>
     @cycleTodo ed, -1
 
+  demoteTree: (ed) =>
+    @indentCurrentTree ed, 1
+
+  promoteTree: (ed) =>
+    @indentCurrentTree ed, -1
+
   insertHeadlineWith: (prefix, ed, respectContent) =>
     if (respectContent==true)
       ed.moveCursorToEndOfLine()
@@ -51,6 +62,17 @@ class OrgStructureEdit extends OrgEditorHelpers
   indentCurrentLine: (ed, value) =>
     row = @getCurrentRow(ed)
     @indentLine ed, row, value
+
+  indentCurrentTree: (ed, value) =>
+    row = @getCurrentRow(ed)
+    buffer = ed.getBuffer()
+    indent = ed.indentationForBufferRow(row)
+    for i in [row+1 .. buffer.getLastRow()] by 1
+      if (indent > 0 || value > 0) and ed.indentationForBufferRow(i) > indent
+        @indentLine(ed, i, value)
+      else
+        break
+    @indentCurrentLine(ed, value)
 
   indentLine: (ed, row, value) =>
     newIndent = ed.indentationForBufferRow(row) + value

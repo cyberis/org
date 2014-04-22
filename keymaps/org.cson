@@ -16,3 +16,5 @@
   'alt-left': 'org:promote-headline'
   'shift-right': 'org:cycle-todo-forward'
   'shift-left': 'org:cycle-todo-backward'
+  'alt-shift-right': 'org:demote-tree'
+  'alt-shift-left': 'org:promote-tree'
