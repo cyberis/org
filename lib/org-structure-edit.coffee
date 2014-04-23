@@ -70,17 +70,23 @@ class OrgStructureEdit extends OrgEditorHelpers
 
   moveTreeUp: (ed) =>
     pos = @getCursorPosition ed
-    row = pos.row
-    buffer = ed.getBuffer()
-    currentLine = buffer.lineForRow(row)
-    prevLine = buffer.lineForRow(row-1)
     ed.selectLine()
-    ed.insertText(prevLine + '\n')
-    @moveCursorUp ed
-    @moveCursorUp ed
-    ed.selectLine()
-    ed.insertText(currentLine + '\n')
-    @setCursorPosition(ed, row - 1, pos.column)
+    row = pos.row;
+    indent = ed.indentationForBufferRow row
+    row++
+    while (row < ed.getBuffer().getLastRow() and ed.indentationForBufferRow(row) > indent)
+      row++;
+      ed.selectDown 1
+    ed.cutSelectedText()
+
+    row = pos.row-1
+    while (row >= 0)
+      if ed.indentationForBufferRow(row) == indent
+        @setCurrentRow ed, row
+        break
+      row--
+    ed.pasteText()
+    @setCurrentRow ed, row
 
 
   insertHeadlineWith: (prefix, ed, respectContent) =>
