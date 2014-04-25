@@ -70,15 +70,26 @@ class OrgStructureEdit extends OrgEditorHelpers
       ed.selectDown 1
     ed.cutSelectedText()
 
-    row = startRow + 1
+    row = startRow
+    insertionRow = - 1
     while (row < lastRow)
-      if ed.indentationForBufferRow(row) <= indent
-        @setCurrentRow ed, row
+      if ed.indentationForBufferRow(row) < indent
         break
+      if insertionRow!=-1 and ed.indentationForBufferRow(row) == indent
+        break
+      if insertionRow==-1 and ed.indentationForBufferRow(row) == indent
+        insertionRow = row + 1
+      if insertionRow!=-1 and ed.indentationForBufferRow(row) > indent
+        insertionRow = row + 1
       row++
 
-    if (row==lastRow)
+    if (insertionRow == -1)
+      insertionRow = startRow
+
+    @setCurrentRow ed, insertionRow
+    if (insertionRow == lastRow)
       ed.insertNewline()
+
 
     finalRow = @getCurrentRow ed
     for line in lines
@@ -102,14 +113,22 @@ class OrgStructureEdit extends OrgEditorHelpers
     ed.cutSelectedText()
 
     row = startRow - 1
+    insertionRow = - 1
     while (row >= 0)
-      if ed.indentationForBufferRow(row) <= indent
-        @setCurrentRow ed, row
+      if ed.indentationForBufferRow(row) < indent
         break
+      if insertionRow!=-1 and ed.indentationForBufferRow(row) == indent
+        break
+      if insertionRow==-1 and ed.indentationForBufferRow(row) == indent
+        insertionRow = row
+      if insertionRow!=-1 and ed.indentationForBufferRow(row) > indent
+        insertionRow = row
       row--
 
-    #if (row==lastRow)
-    #  ed.insertNewline()
+    if (insertionRow == -1)
+      insertionRow = startRow
+
+    @setCurrentRow ed, insertionRow
 
     finalRow = @getCurrentRow ed
     for line in lines
