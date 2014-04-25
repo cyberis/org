@@ -90,31 +90,32 @@ class OrgStructureEdit extends OrgEditorHelpers
     lines = new Array()
     row = @getCurrentRow ed
     startRow = row
-
-    indent = ed.indentationForBufferRow row
     @setCursorPosition ed, row, 0
-
+    indent = ed.indentationForBufferRow row
     ed.selectLine
     lastRow = ed.getBuffer().getLastRow()
-    while (row==startRow or (row < lastRow and ed.indentationForBufferRow(row) > indent))
+    while (row==startRow or (row <lastRow and ed.indentationForBufferRow(row) > indent))
       lines.push @getLineAtRow ed, row
       row++;
       ed.selectDown 1
 
     ed.cutSelectedText()
 
-    row = startRow-1
+    row = startRow - 1
     while (row >= 0)
-      if ed.indentationForBufferRow(row) == indent
+      if ed.indentationForBufferRow(row) <= indent
         @setCurrentRow ed, row
         break
       row--
 
-    @setCursorPosition ed, @getCurrentRow ed, 0
+    #if (row==lastRow)
+    #  ed.insertNewline()
+
+    finalRow = @getCurrentRow ed
     for line in lines
       ed.insertText line + '\n'
 
-    @setCurrentRow ed, row
+    @setCurrentRow ed, finalRow
 
   insertHeadlineWith: (prefix, ed, respectContent) =>
     if (respectContent==true)
