@@ -57,37 +57,64 @@ class OrgStructureEdit extends OrgEditorHelpers
     @indentCurrentTree ed, -1
 
   moveTreeDown: (ed) =>
-    pos = @getCursorPosition ed
-    row = pos.row
-    buffer = ed.getBuffer()
-    currentLine = buffer.lineForRow(row)
-    nextLine = buffer.lineForRow(row+1)
-    ed.selectLine()
-    ed.insertText(nextLine + '\n')
-    ed.selectLine()
-    ed.insertText(currentLine + '\n')
-    @setCursorPosition(ed, row + 1, pos.column)
-
-  moveTreeUp: (ed) =>
-    pos = @getCursorPosition ed
-    ed.selectLine()
-    row = pos.row;
+    lines = new Array()
+    row = @getCurrentRow ed
+    startRow = row
+    @setCursorPosition ed, row, 0
     indent = ed.indentationForBufferRow row
-    row++
-    while (row < ed.getBuffer().getLastRow() and ed.indentationForBufferRow(row) > indent)
+    ed.selectLine
+    lastRow = ed.getBuffer().getLastRow()
+    while (row==startRow or (row <lastRow and ed.indentationForBufferRow(row) > indent))
+      lines.push @getLineAtRow ed, row
       row++;
       ed.selectDown 1
     ed.cutSelectedText()
 
-    row = pos.row-1
+    row = startRow + 1
+    while (row < lastRow)
+      if ed.indentationForBufferRow(row) <= indent
+        @setCurrentRow ed, row
+        break
+      row++
+
+    if (row==lastRow)
+      ed.insertNewline()
+
+    finalRow = @getCurrentRow ed
+    for line in lines
+      ed.insertText line + '\n'
+
+    @setCurrentRow ed, finalRow
+
+  moveTreeUp: (ed) =>
+    lines = new Array()
+    row = @getCurrentRow ed
+    startRow = row
+
+    indent = ed.indentationForBufferRow row
+    @setCursorPosition ed, row, 0
+
+    ed.selectLine
+    lastRow = ed.getBuffer().getLastRow()
+    while (row==startRow or (row < lastRow and ed.indentationForBufferRow(row) > indent))
+      lines.push @getLineAtRow ed, row
+      row++;
+      ed.selectDown 1
+
+    ed.cutSelectedText()
+
+    row = startRow-1
     while (row >= 0)
       if ed.indentationForBufferRow(row) == indent
         @setCurrentRow ed, row
         break
       row--
-    ed.pasteText()
-    @setCurrentRow ed, row
 
+    @setCursorPosition ed, @getCurrentRow ed, 0
+    for line in lines
+      ed.insertText line + '\n'
+
+    @setCurrentRow ed, row
 
   insertHeadlineWith: (prefix, ed, respectContent) =>
     if (respectContent==true)

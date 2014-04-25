@@ -11,6 +11,9 @@ class OrgEditorHelpers
 
   getCurrentLine: (ed) =>
     row = @getCurrentRow ed
+    return @getLineAtRow ed, row
+
+  getLineAtRow: (ed, row) =>
     return ed.getBuffer().lineForRow(row)
 
   getCurrentRow: (ed) =>
