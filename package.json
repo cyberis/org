@@ -6,7 +6,7 @@
   "activationEvents": [
     "org:toggle"
   ],
-  "repository": "https://github.com/wolfgang/org",
+  "repository": "https://github.com/cyberis/org",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
